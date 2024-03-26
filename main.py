@@ -4,7 +4,7 @@ import time
 import random
 
 
-AIO_FEED_ID = ["nutnhan1", "nutnhan2"]
+AIO_FEED_IDs = ["nutnhan1", "nutnhan2"]
 AIO_USERNAME = "ngmhieu"
 AIO_KEY = ""
 
