@@ -1,0 +1,3 @@
+0 Deo kinh
+1 Khong deo kinh
+2 Khong co nguoi
