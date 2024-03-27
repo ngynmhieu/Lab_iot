@@ -1,3 +1,2 @@
-0 Wearing headphone
-1 Not wearing headphone
-2 No one
+0 binhthuong
+1 khongconguoi
