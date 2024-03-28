@@ -1,21 +1,21 @@
 package bku.iot.demoiot;
 
-import androidx.appcompat.app.AppCompatActivity;
+        import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.TextView;
+        import android.os.Bundle;
+        import android.util.Log;
+        import android.widget.TextView;
 
-import com.github.angads25.toggle.interfaces.OnToggledListener;
-import com.github.angads25.toggle.model.ToggleableView;
-import com.github.angads25.toggle.widget.LabeledSwitch;
+        import com.github.angads25.toggle.interfaces.OnToggledListener;
+        import com.github.angads25.toggle.model.ToggleableView;
+        import com.github.angads25.toggle.widget.LabeledSwitch;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+        import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+        import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+        import org.eclipse.paho.client.mqttv3.MqttException;
+        import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.nio.charset.Charset;
+        import java.nio.charset.Charset;
 
 public class MainActivity extends AppCompatActivity {
     MQTTHelper mqttHelper;
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 else if (topic.contains("cambien2")){
                     txtHum.setText(message.toString() + "lux");
                 }else if (topic.contains("cambien3")){
-                    txtHum.setText(message.toString() + "%");
+                    txtLig.setText(message.toString() + "%");
                 } else if (topic.contains("nutnhan1")){
                     if (message.toString().equals("1")){
                         btnLed.setOn(true);
