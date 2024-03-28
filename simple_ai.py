@@ -14,7 +14,7 @@ class_names = ["Binhthuong", "Khongconguoi"]
 # CAMERA can be 0 or 1 based on default camera of your computer
 camera = cv2.VideoCapture(0)
 
-while True:
+def image_detector():
     # Grab the webcamera's image.
     ret, image = camera.read()
 
@@ -39,13 +39,6 @@ while True:
     # Print prediction and confidence score
     print("Class:", class_name[2:], end="")
     print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+    return "Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%"
 
-    # Listen to the keyboard for presses.
-    keyboard_input = cv2.waitKey(1)
 
-    # 27 is the ASCII for the esc key on your keyboard.
-    if keyboard_input == 27:
-        break
-
-camera.release()
-cv2.destroyAllWindows()

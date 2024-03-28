@@ -1,8 +1,9 @@
 import sys
+import json
 from Adafruit_IO import MQTTClient
 import time
 import random
-# from simple_ai import *
+from simple_ai import *
 from uart import *
 
 
@@ -66,12 +67,13 @@ while True:
     #         light = random.randint(100,500)
     #         client.publish("cambien3", light)
     #         sensor_type = 0
-    # counter_ai -= 1
-    # if counter_ai <= 0:
-    #     counter_ai = 5
-    #     ai_result = image_detector()
-    #     print ("AI Output: ", ai_result)
-    #     client.publish("ai", ai_result)
+    counter_ai -= 1
+    if counter_ai <= 0:
+        counter_ai = 5
+        ai_result = image_detector()
+        print ("AI Output: ", ai_result)
+        ai_result_str = json.dumps(ai_result)
+        client.publish("ai", ai_result_str)
     readSerial(client)
     time.sleep(1)
     pass
