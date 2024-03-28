@@ -1,2 +1,3 @@
-0 binhthuong
-1 khongconguoi
+0 Normal
+1 No glasses
+2 No one

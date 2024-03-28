@@ -9,7 +9,7 @@ np.set_printoptions(suppress=True)
 model = load_model("keras_Model.h5", compile=False)
 
 # Load the labels
-class_names = ["Binhthuong", "Khongconguoi"]
+class_names = ["Normal", "No glasses", "No one"]
 
 # CAMERA can be 0 or 1 based on default camera of your computer
 camera = cv2.VideoCapture(0)
@@ -37,8 +37,7 @@ def image_detector():
     confidence_score = prediction[0][index]
 
     # Print prediction and confidence score
-    print("Class:", class_name[2:], end="")
-    print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+    print("Class:", class_name, end="")
+    print(" | Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
     return "Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%"
-
 
