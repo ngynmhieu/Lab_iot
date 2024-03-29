@@ -46,20 +46,6 @@
             android:layout_margin="20dp">
         </TextView>
         <TextView
-            android:id="@+id/txtLight"
-            android:layout_width = "0dp"
-            android:layout_height= "match_parent"
-            android:layout_weight = "1"
-            android:background="#f000"
-            android:text="40 lux"
-            android:textSize = "35dp"
-            android:textStyle="bold"
-            android:textColor="#fff"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp">
-        </TextView>
-        <TextView
             android:id="@+id/txtHumidity"
             android:layout_width = "0dp"
             android:layout_height= "match_parent"
@@ -69,6 +55,21 @@
             android:textSize = "35dp"
             android:textStyle="bold"
             android:textColor="#ffff"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+        </TextView>
+        <TextView
+            android:id="@+id/txtLight"
+            android:layout_width = "0dp"
+            android:layout_height= "match_parent"
+            android:layout_weight = "1"
+            android:background="#f000"
+            android:text="40 lux"
+            android:textSize = "35dp"
+            android:textStyle="bold"
+            android:textColor="#fff"
             android:gravity="center"
             android:layout_margin="20dp">
         </TextView>
