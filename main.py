@@ -9,7 +9,7 @@ import random
 
 AIO_FEED_IDs = ["nutnhan1", "nutnhan2"]
 AIO_USERNAME = "ngmhieu"
-AIO_KEY = "aio_ldIT28hezujV6Nba2zkRnIN0qhp5"
+AIO_KEY = ""
 
 def connected(client):
     print("Ket noi thanh cong ...")
@@ -44,9 +44,9 @@ client.on_subscribe = subscribe
 client.connect()
 client.loop_background()
 
-counter = 10
+counter = 5
 sensor_type = 0
-counter_ai = 5
+# counter_ai = 5
 while True:
     counter -= 1
     if counter <= 0:
