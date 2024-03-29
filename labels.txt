@@ -1,3 +1,3 @@
-0 Normal
-1 No glasses
-2 No one
+0 Class 1
+1 Class 2
+2 Class 3
