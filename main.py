@@ -1,5 +1,5 @@
 import sys
-import json
+# import json
 from Adafruit_IO import MQTTClient
 import time
 import random
@@ -44,9 +44,9 @@ client.on_subscribe = subscribe
 client.connect()
 client.loop_background()
 
-counter = 5
+counter = 10
 sensor_type = 0
-# counter_ai = 5
+counter_ai = 5
 while True:
     counter -= 1
     if counter <= 0:
@@ -55,17 +55,20 @@ while True:
         if sensor_type == 0:
             print ("Temperature... ")
             temp = random.randint(10,20)
+            print (temp)
             client.publish("cambien1", temp)
             sensor_type = 1
         elif sensor_type == 1:     
-            print ("Humid... ")       
-            humid = random.randint(50,70)
-            client.publish("cambien2", humid)
+            print ("Light... ")       
+            light = random.randint(100,500)
+            print(light)
+            client.publish("cambien2", light)
             sensor_type = 2
         elif sensor_type == 2:
-            print ("Light... ")    
-            light = random.randint(100,500)
-            client.publish("cambien3", light)
+            print ("Humid... ")    
+            humid = random.randint(0,100)
+            print (humid)
+            client.publish("cambien3", humid)
             sensor_type = 0
     # counter_ai -= 1
     # if counter_ai <= 0:
