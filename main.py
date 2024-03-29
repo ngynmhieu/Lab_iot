@@ -4,7 +4,7 @@ from Adafruit_IO import MQTTClient
 import time
 import random
 from simple_ai import *
-from uart import *
+# from uart import *
 
 
 AIO_FEED_IDs = ["nutnhan1", "nutnhan2"]
@@ -25,16 +25,16 @@ def disconnected(client):
 
 def message(client , feed_id , payload):
     print("Nhan du lieu: " + payload + ", feed id: " + feed_id)
-    if feed_id == "nutnhan1":
-        if payload == "0":
-            writeData(1)
-        else:
-            writeData(2)
-    if feed_id == "nutnhan2":
-        if payload == "0":
-            writeData(3)
-        else:
-            writeData(4)
+    # if feed_id == "nutnhan1":
+    #     if payload == "0":
+    #         writeData(1)
+    #     else:
+    #         writeData(2)
+    # if feed_id == "nutnhan2":
+    #     if payload == "0":
+    #         writeData(3)
+    #     else:
+    #         writeData(4)
 
 client = MQTTClient(AIO_USERNAME , AIO_KEY)
 client.on_connect = connected
@@ -74,6 +74,6 @@ while True:
         print ("AI Output: ", ai_result)
         ai_result_str = json.dumps(ai_result)
         client.publish("ai", ai_result_str)
-    readSerial(client)
+    # readSerial(client)
     time.sleep(1)
     pass
