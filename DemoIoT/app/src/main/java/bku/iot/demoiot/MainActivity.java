@@ -16,7 +16,7 @@ package bku.iot.demoiot;
         import org.eclipse.paho.client.mqttv3.MqttMessage;
 
         import java.nio.charset.Charset;
-
+// test git on android studio
 public class MainActivity extends AppCompatActivity {
     MQTTHelper mqttHelper;
     TextView txtTemp, txtLig, txtHum;

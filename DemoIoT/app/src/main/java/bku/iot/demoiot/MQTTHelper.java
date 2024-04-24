@@ -1,5 +1,5 @@
 package bku.iot.demoiot;
-
+//Change to main brandch
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
