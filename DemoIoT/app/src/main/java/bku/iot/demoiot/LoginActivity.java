@@ -26,21 +26,15 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Validate the login information
                 // If valid, start MainActivity
-                if (validateLogin(username, key)) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("username", username);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    finish();
-                }
+
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+
             }
         });
     }
 
-    private boolean validateLogin(String username, String key) {
-        // Validate the username and password
-        // Return true if valid, false otherwise
-        // This is just a placeholder, replace with your own validation logic
-        return username.equals("admin") && key.equals("key");
-    }
 }

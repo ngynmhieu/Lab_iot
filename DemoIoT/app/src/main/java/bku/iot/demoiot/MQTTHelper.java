@@ -18,16 +18,18 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
-    public final String[] arrayTopics = {"ngmhieu/feeds/cambien1", "ngmhieu/feeds/cambien2","ngmhieu/feeds/cambien3", "ngmhieu/feeds/nutnhan1", "ngmhieu/feeds/nutnhan2"};
+    public final String[] arrayTopics = {"/feeds/cambien1", "/feeds/cambien2","/feeds/cambien3", "/feeds/nutnhan1", "/feeds/nutnhan2"};
 
     final String clientId = "12345678";
-    final String username = "";
-    final String password = "";
+    String username = "";
+    String key = "";
 
     final String serverUri = "tcp://io.adafruit.com:1883";
 
-    public MQTTHelper(Context context){
+    public MQTTHelper(Context context, String username, String key){
         mqttAndroidClient = new MqttAndroidClient(context, serverUri, clientId);
+        this.username = username;
+        this.key = key;
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean b, String s) {
@@ -56,12 +58,21 @@ public class MQTTHelper {
         mqttAndroidClient.setCallback(callback);
     }
 
+    public interface ConnectionFailedListener {
+        void onConnectionFailed();
+    }
+
+    private ConnectionFailedListener connectionFailedListener;
+    public void setConnectionFailedListener(ConnectionFailedListener connectionFailedListener) {
+        this.connectionFailedListener = connectionFailedListener;
+    }
+
     private void connect(){
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
-        mqttConnectOptions.setUserName(username);
-        mqttConnectOptions.setPassword(password.toCharArray());
+        mqttConnectOptions.setUserName(this.username);
+        mqttConnectOptions.setPassword(this.key.toCharArray());
 
         try {
 
@@ -81,6 +92,9 @@ public class MQTTHelper {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Log.w("Mqtt", "Failed to connect to: " + serverUri + exception.toString());
+                    if (connectionFailedListener != null) {
+                        connectionFailedListener.onConnectionFailed();
+                    }
                 }
             });
 
@@ -93,7 +107,7 @@ public class MQTTHelper {
     private void subscribeToTopic() {
         for(int i = 0; i < arrayTopics.length; i++) {
             try {
-                mqttAndroidClient.subscribe(arrayTopics[i], 0, null, new IMqttActionListener() {
+                mqttAndroidClient.subscribe(username + arrayTopics[i], 0, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         Log.d("TEST", "Subscribed!");

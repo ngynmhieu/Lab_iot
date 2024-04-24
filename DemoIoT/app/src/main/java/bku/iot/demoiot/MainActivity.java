@@ -22,14 +22,15 @@ public class MainActivity extends AppCompatActivity {
     MQTTHelper mqttHelper;
     TextView txtTemp, txtLig, txtHum;
     LabeledSwitch btnLed, btnPump;
+    String username, key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
 //        Gui va nhan key tu login activity
-        String username = intent.getStringExtra("username");
-        String key = intent.getStringExtra("key");
+        username = intent.getStringExtra("username");
+        key = intent.getStringExtra("key");
 
         txtTemp = findViewById(R.id.txtTemperature);
         txtHum = findViewById(R.id.txtHumidity);
@@ -41,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
                 if (isOn == true){
-                    sendDataMQTT("ngmhieu/feeds/nutnhan1", "1");
+                    sendDataMQTT(username + "/feeds/nutnhan1", "1");
                 }
                 else {
-                    sendDataMQTT("ngmhieu/feeds/nutnhan1", "0");
+                    sendDataMQTT(username + "/feeds/nutnhan1", "0");
                 }
             }
         });
@@ -52,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
                 if (isOn == true){
-                    sendDataMQTT("ngmhieu/feeds/nutnhan2", "1");
+                    sendDataMQTT(username + "/feeds/nutnhan2", "1");
                 }
                 else {
-                    sendDataMQTT("ngmhieu/feeds/nutnhan2", "0");
+                    sendDataMQTT(username + "/feeds/nutnhan2", "0");
                 }
             }
         });
@@ -77,7 +78,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void startMQTT(){
-        mqttHelper = new MQTTHelper(this);
+        mqttHelper = new MQTTHelper(this, username, key);
+        mqttHelper.setConnectionFailedListener(new MQTTHelper.ConnectionFailedListener() {
+            @Override
+            public void onConnectionFailed() {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
