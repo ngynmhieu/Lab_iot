@@ -2,6 +2,7 @@ package bku.iot.demoiot;
 
         import androidx.appcompat.app.AppCompatActivity;
 
+        import android.content.Intent;
         import android.os.Bundle;
         import android.util.Log;
         import android.widget.TextView;
@@ -25,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = getIntent();
+//        Gui va nhan key tu login activity
+        String username = intent.getStringExtra("username");
+        String key = intent.getStringExtra("key");
+
         txtTemp = findViewById(R.id.txtTemperature);
         txtHum = findViewById(R.id.txtHumidity);
         txtLig = findViewById(R.id.txtLight);
