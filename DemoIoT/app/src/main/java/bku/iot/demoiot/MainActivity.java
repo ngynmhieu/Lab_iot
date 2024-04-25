@@ -6,7 +6,9 @@ package bku.iot.demoiot;
         import android.content.Intent;
         import android.os.Bundle;
         import android.util.Log;
+        import android.view.View;
         import android.widget.CompoundButton;
+        import android.widget.RelativeLayout;
         import android.widget.TextView;
 
         import com.github.angads25.toggle.interfaces.OnToggledListener;
@@ -19,14 +21,26 @@ package bku.iot.demoiot;
         import org.eclipse.paho.client.mqttv3.MqttMessage;
 
         import java.nio.charset.Charset;
+        import java.text.SimpleDateFormat;
+        import java.util.ArrayList;
+        import java.util.Date;
+        import java.util.Locale;
+
         import androidx.appcompat.widget.SwitchCompat;
         import android.widget.CompoundButton;
 // test git on android studio
 public class MainActivity extends AppCompatActivity {
     MQTTHelper mqttHelper;
-    TextView txtTemp, txtLig, txtHum;
+    TextView txtTemp, txtLight, txtHumid;
     SwitchCompat btnLed, btnPump;
     String username, key;
+    RelativeLayout TempCard, HumidCard, LightCard, DiaryCard;
+
+    private ArrayList<String> LightList = new ArrayList<>();
+    private ArrayList<String> TempList = new ArrayList<>();
+    private ArrayList<String> HumidList = new ArrayList<>();
+    private ArrayList<String> DiaryList = new ArrayList<>();
+    private ArrayList<String> DiaryTimeList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,19 +51,29 @@ public class MainActivity extends AppCompatActivity {
         key = intent.getStringExtra("key");
 
         txtTemp = findViewById(R.id.TempValue);
-        txtHum = findViewById(R.id.HumidValue);
-        txtLig = findViewById(R.id.LightValue);
+        txtHumid = findViewById(R.id.HumidValue);
+        txtLight = findViewById(R.id.LightValue);
         btnLed = findViewById(R.id.switchLight);
         btnPump = findViewById(R.id.switchPump);
+        TempCard = findViewById(R.id.TempCard);
+        HumidCard = findViewById(R.id.HumidCard);
+        LightCard = findViewById(R.id.LightCard);
+        DiaryCard = findViewById(R.id.DiaryCard);
 
         btnLed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
                 if (isChecked){
                     sendDataMQTT(username + "/feeds/nutnhan1", "1");
+                    DiaryList.add ("nutnhan1: 1");
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }
                 else {
                     sendDataMQTT(username + "/feeds/nutnhan1", "0");
+                    DiaryList.add ("nutnhan1: 0");
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }
             }
         });
@@ -58,14 +82,61 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
                 if (isChecked == true){
                     sendDataMQTT(username + "/feeds/nutnhan2", "1");
+                    DiaryList.add ("nutnhan2: 1");
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }
                 else {
                     sendDataMQTT(username + "/feeds/nutnhan2", "0");
+                    DiaryList.add ("nutnhan2: 0");
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }
             }
         });
 
 //        btnPump.setOnToggledListener();
+
+        TempCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String [] templist= TempList.toArray(new String[0]);
+                Intent intent = new Intent(MainActivity.this, TempActivity.class);
+                intent.putExtra("TempList", templist);
+                startActivity(intent);
+            }
+        });
+        HumidCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String [] humidlist = HumidList.toArray(new String[0]);
+                Intent intent = new Intent(MainActivity.this, HumidActivity.class);
+                intent.putExtra("HumidList", humidlist);
+                startActivity(intent);
+            }
+        });
+        LightCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] lightlist = LightList.toArray(new String[0]);
+
+                Intent intent = new Intent(MainActivity.this, LightActivity.class);
+                intent.putExtra("LightList", lightlist);
+
+                startActivity(intent);
+            }
+        });
+        DiaryCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] diarylist = DiaryList.toArray(new String[0]);
+                String[] diarytimelist = DiaryTimeList.toArray(new String[0]);
+                Intent intent = new Intent(MainActivity.this, DiaryActivity.class);
+                intent.putExtra("DiaryList", diarylist);
+                intent.putExtra("DiaryTimeList", diarytimelist);
+                startActivity(intent);
+            }
+        });
         startMQTT();
     }
     public void sendDataMQTT(String topic, String value){
@@ -108,23 +179,55 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TEST", topic + "***" + message.toString());
                 if (topic.contains("cambien1")){
                     txtTemp.setText(message.toString() + "°C");
+                    TempList.add(message.toString());
+                    String diaryentry = "cambien1: " + message.toString();
+                    DiaryList.add (diaryentry);
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }
                 else if (topic.contains("cambien2")){
-                    txtHum.setText(message.toString() + "lux");
+                    txtLight.setText(message.toString() + "lux");
+                    LightList.add(message.toString());
+                    String diaryentry = "cambien2: " + message.toString();
+                    DiaryList.add (diaryentry);
+                    DiaryList.add (message.toString());
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }else if (topic.contains("cambien3")){
-                    txtLig.setText(message.toString() + "%");
+                    txtHumid.setText(message.toString() + "%");
+                    HumidList.add(message.toString());
+                    String diaryentry = "cambien3: " + message.toString();
+                    DiaryList.add (diaryentry);
+                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                    DiaryTimeList.add(currentTime);
                 }
                 else if (topic.contains("nutnhan1")){
                     if (message.toString().equals("1")){
                         btnLed.setChecked(true);
+                        String diaryentry = "nutnhan1: " + message.toString();
+                        DiaryList.add (diaryentry);
+                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                        DiaryTimeList.add(currentTime);
                     }else if (message.toString().equals("0")){
                         btnLed.setChecked(false);
+                        String diaryentry = "nutnhan1: " + message.toString();
+                        DiaryList.add (diaryentry);
+                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                        DiaryTimeList.add(currentTime);
                     }
                 } else if (topic.contains("nutnhan2")){
                     if (message.toString().equals("1")){
                         btnPump.setChecked(true);
+                        String diaryentry = "nutnhan2: " + message.toString();
+                        DiaryList.add (diaryentry);
+                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                        DiaryTimeList.add(currentTime);
                     }else if (message.toString().equals("0")){
                         btnPump.setChecked(false);
+                        String diaryentry = "nutnhan2: " + message.toString();
+                        DiaryList.add (diaryentry);
+                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+                        DiaryTimeList.add(currentTime);
                     }
                 }
             }

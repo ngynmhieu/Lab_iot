@@ -28,6 +28,11 @@
             android:name=".MainActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".LightActivity" />
+        <activity android:name=".TempActivity" />
+        <activity android:name=".HumidActivity" />
+        <activity android:name=".DiaryActivity" />
+
         <service android:name="org.eclipse.paho.android.service.MqttService"/>
     </application>
 

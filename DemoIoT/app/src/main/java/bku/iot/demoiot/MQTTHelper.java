@@ -20,7 +20,7 @@ public class MQTTHelper {
 
     public final String[] arrayTopics = {"/feeds/cambien1", "/feeds/cambien2","/feeds/cambien3", "/feeds/nutnhan1", "/feeds/nutnhan2"};
 
-    final String clientId = "12345678";
+    final String clientId = "110903";
     String username;
     String key;
 
