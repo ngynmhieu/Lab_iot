@@ -21,8 +21,8 @@ public class MQTTHelper {
     public final String[] arrayTopics = {"/feeds/cambien1", "/feeds/cambien2","/feeds/cambien3", "/feeds/nutnhan1", "/feeds/nutnhan2"};
 
     final String clientId = "12345678";
-    String username = "";
-    String key = "";
+    String username;
+    String key;
 
     final String serverUri = "tcp://io.adafruit.com:1883";
 
@@ -110,7 +110,7 @@ public class MQTTHelper {
                 mqttAndroidClient.subscribe(username + arrayTopics[i], 0, null, new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
-                        Log.d("TEST", "Subscribed!");
+                        Log.d("TEST",  "Subscribed");
                     }
 
                     @Override

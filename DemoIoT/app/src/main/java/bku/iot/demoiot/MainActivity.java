@@ -1,10 +1,12 @@
 package bku.iot.demoiot;
 
         import androidx.appcompat.app.AppCompatActivity;
+        import androidx.appcompat.widget.SwitchCompat;
 
         import android.content.Intent;
         import android.os.Bundle;
         import android.util.Log;
+        import android.widget.CompoundButton;
         import android.widget.TextView;
 
         import com.github.angads25.toggle.interfaces.OnToggledListener;
@@ -17,11 +19,13 @@ package bku.iot.demoiot;
         import org.eclipse.paho.client.mqttv3.MqttMessage;
 
         import java.nio.charset.Charset;
+        import androidx.appcompat.widget.SwitchCompat;
+        import android.widget.CompoundButton;
 // test git on android studio
 public class MainActivity extends AppCompatActivity {
     MQTTHelper mqttHelper;
     TextView txtTemp, txtLig, txtHum;
-    LabeledSwitch btnLed, btnPump;
+    SwitchCompat btnLed, btnPump;
     String username, key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
         username = intent.getStringExtra("username");
         key = intent.getStringExtra("key");
 
-        txtTemp = findViewById(R.id.txtTemperature);
-        txtHum = findViewById(R.id.txtHumidity);
-        txtLig = findViewById(R.id.txtLight);
-        btnLed = findViewById(R.id.btnLed);
-        btnPump = findViewById(R.id.btnPump);
+        txtTemp = findViewById(R.id.TempValue);
+        txtHum = findViewById(R.id.HumidValue);
+        txtLig = findViewById(R.id.LightValue);
+        btnLed = findViewById(R.id.switchLight);
+        btnPump = findViewById(R.id.switchPump);
 
-        btnLed.setOnToggledListener(new OnToggledListener() {
+        btnLed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-                if (isOn == true){
+            public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+                if (isChecked){
                     sendDataMQTT(username + "/feeds/nutnhan1", "1");
                 }
                 else {
@@ -49,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        btnPump.setOnToggledListener(new OnToggledListener() {
+        btnPump.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onSwitched(ToggleableView toggleableView, boolean isOn) {
-                if (isOn == true){
+            public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+                if (isChecked == true){
                     sendDataMQTT(username + "/feeds/nutnhan2", "1");
                 }
                 else {
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
 //        btnPump.setOnToggledListener();
         startMQTT();
     }
@@ -90,12 +95,12 @@ public class MainActivity extends AppCompatActivity {
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
-
+                Log.d("TEST", "Connected to " + serverURI);
             }
 
             @Override
             public void connectionLost(Throwable cause) {
-
+                Log.d("TEST", "Connection lost", cause);
             }
 
             @Override
@@ -108,24 +113,25 @@ public class MainActivity extends AppCompatActivity {
                     txtHum.setText(message.toString() + "lux");
                 }else if (topic.contains("cambien3")){
                     txtLig.setText(message.toString() + "%");
-                } else if (topic.contains("nutnhan1")){
+                }
+                else if (topic.contains("nutnhan1")){
                     if (message.toString().equals("1")){
-                        btnLed.setOn(true);
+                        btnLed.setChecked(true);
                     }else if (message.toString().equals("0")){
-                        btnLed.setOn(false);
+                        btnLed.setChecked(false);
                     }
                 } else if (topic.contains("nutnhan2")){
                     if (message.toString().equals("1")){
-                        btnPump.setOn(true);
+                        btnPump.setChecked(true);
                     }else if (message.toString().equals("0")){
-                        btnPump.setOn(false);
+                        btnPump.setChecked(false);
                     }
                 }
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-
+                Log.d("TEST", "Delivery complete for token: " + token);
             }
         });
     }
