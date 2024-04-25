@@ -75,12 +75,14 @@ public class MainActivity extends AppCompatActivity {
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
+                Log.d("TEST", "Connected to: " + serverURI);
+
 
             }
 
             @Override
             public void connectionLost(Throwable cause) {
-
+                Log.d("TEST", "Connection Lost");
             }
 
             @Override
