@@ -34,13 +34,15 @@ public class MainActivity extends AppCompatActivity {
     TextView txtTemp, txtLight, txtHumid;
     SwitchCompat btnLed, btnPump;
     String username, key;
-    RelativeLayout TempCard, HumidCard, LightCard, DiaryCard;
+    RelativeLayout TempCard, HumidCard, LightCard;
+
+    private boolean isWifiConnected = false;
 
     private ArrayList<String> LightList = new ArrayList<>();
     private ArrayList<String> TempList = new ArrayList<>();
     private ArrayList<String> HumidList = new ArrayList<>();
-    private ArrayList<String> DiaryList = new ArrayList<>();
-    private ArrayList<String> DiaryTimeList = new ArrayList<>();
+//    private ArrayList<String> DiaryList = new ArrayList<>();
+//    private ArrayList<String> DiaryTimeList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,39 +60,51 @@ public class MainActivity extends AppCompatActivity {
         TempCard = findViewById(R.id.TempCard);
         HumidCard = findViewById(R.id.HumidCard);
         LightCard = findViewById(R.id.LightCard);
-        DiaryCard = findViewById(R.id.DiaryCard);
+//        DiaryCard = findViewById(R.id.DiaryCard);
+
 
         btnLed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+                Log.d ("TEST", String.valueOf(isWifiConnected));
                 if (isChecked){
-                    sendDataMQTT(username + "/feeds/nutnhan1", "1");
-                    DiaryList.add ("nutnhan1: 1");
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+                    if (isWifiConnected){
+                        sendDataMQTT(username + "/feeds/nutnhan1", "1");
+                    }
+                    else {
+                        btnLed.setChecked(false);
+                    }
                 }
                 else {
-                    sendDataMQTT(username + "/feeds/nutnhan1", "0");
-                    DiaryList.add ("nutnhan1: 0");
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+                    if (isWifiConnected){
+                        sendDataMQTT(username + "/feeds/nutnhan1", "0");
+                    }
+                    else{
+                        btnLed.setChecked(true);
+                    }
                 }
+
             }
         });
         btnPump.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
-                if (isChecked == true){
-                    sendDataMQTT(username + "/feeds/nutnhan2", "1");
-                    DiaryList.add ("nutnhan2: 1");
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+                Log.d ("TEST", String.valueOf(isWifiConnected));
+                if (isChecked){
+                    if (isWifiConnected){
+                        sendDataMQTT(username + "/feeds/nutnhan2", "1");
+                    }
+                    else {
+                        btnPump.setChecked(false);
+                    }
                 }
                 else {
-                    sendDataMQTT(username + "/feeds/nutnhan2", "0");
-                    DiaryList.add ("nutnhan2: 0");
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+                    if (isWifiConnected){
+                        sendDataMQTT(username + "/feeds/nutnhan2", "0");
+                    }
+                    else{
+                        btnPump.setChecked(true);
+                    }
                 }
             }
         });
@@ -126,17 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        DiaryCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] diarylist = DiaryList.toArray(new String[0]);
-                String[] diarytimelist = DiaryTimeList.toArray(new String[0]);
-                Intent intent = new Intent(MainActivity.this, DiaryActivity.class);
-                intent.putExtra("DiaryList", diarylist);
-                intent.putExtra("DiaryTimeList", diarytimelist);
-                startActivity(intent);
-            }
-        });
+
         startMQTT();
     }
     public void sendDataMQTT(String topic, String value){
@@ -166,11 +170,13 @@ public class MainActivity extends AppCompatActivity {
         mqttHelper.setCallback(new MqttCallbackExtended() {
             @Override
             public void connectComplete(boolean reconnect, String serverURI) {
+                isWifiConnected = true;
                 Log.d("TEST", "Connected to " + serverURI);
             }
 
             @Override
             public void connectionLost(Throwable cause) {
+                isWifiConnected = false;
                 Log.d("TEST", "Connection lost", cause);
             }
 
@@ -180,54 +186,54 @@ public class MainActivity extends AppCompatActivity {
                 if (topic.contains("cambien1")){
                     txtTemp.setText(message.toString() + "°C");
                     TempList.add(message.toString());
-                    String diaryentry = "cambien1: " + message.toString();
-                    DiaryList.add (diaryentry);
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+//                    String diaryentry = "cambien1: " + message.toString();
+//                    DiaryList.add (diaryentry);
+//                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                    DiaryTimeList.add(currentTime);
                 }
                 else if (topic.contains("cambien2")){
                     txtLight.setText(message.toString() + "lux");
                     LightList.add(message.toString());
-                    String diaryentry = "cambien2: " + message.toString();
-                    DiaryList.add (diaryentry);
-                    DiaryList.add (message.toString());
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+//                    String diaryentry = "cambien2: " + message.toString();
+//                    DiaryList.add (diaryentry);
+//                    DiaryList.add (message.toString());
+//                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                    DiaryTimeList.add(currentTime);
                 }else if (topic.contains("cambien3")){
                     txtHumid.setText(message.toString() + "%");
                     HumidList.add(message.toString());
-                    String diaryentry = "cambien3: " + message.toString();
-                    DiaryList.add (diaryentry);
-                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                    DiaryTimeList.add(currentTime);
+//                    String diaryentry = "cambien3: " + message.toString();
+//                    DiaryList.add (diaryentry);
+//                    String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                    DiaryTimeList.add(currentTime);
                 }
                 else if (topic.contains("nutnhan1")){
                     if (message.toString().equals("1")){
                         btnLed.setChecked(true);
-                        String diaryentry = "nutnhan1: " + message.toString();
-                        DiaryList.add (diaryentry);
-                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                        DiaryTimeList.add(currentTime);
+//                        String diaryentry = "nutnhan1: " + message.toString();
+//                        DiaryList.add (diaryentry);
+//                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                        DiaryTimeList.add(currentTime);
                     }else if (message.toString().equals("0")){
                         btnLed.setChecked(false);
-                        String diaryentry = "nutnhan1: " + message.toString();
-                        DiaryList.add (diaryentry);
-                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                        DiaryTimeList.add(currentTime);
+//                        String diaryentry = "nutnhan1: " + message.toString();
+//                        DiaryList.add (diaryentry);
+//                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                        DiaryTimeList.add(currentTime);
                     }
                 } else if (topic.contains("nutnhan2")){
                     if (message.toString().equals("1")){
                         btnPump.setChecked(true);
-                        String diaryentry = "nutnhan2: " + message.toString();
-                        DiaryList.add (diaryentry);
-                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                        DiaryTimeList.add(currentTime);
+//                        String diaryentry = "nutnhan2: " + message.toString();
+//                        DiaryList.add (diaryentry);
+//                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                        DiaryTimeList.add(currentTime);
                     }else if (message.toString().equals("0")){
                         btnPump.setChecked(false);
-                        String diaryentry = "nutnhan2: " + message.toString();
-                        DiaryList.add (diaryentry);
-                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                        DiaryTimeList.add(currentTime);
+//                        String diaryentry = "nutnhan2: " + message.toString();
+//                        DiaryList.add (diaryentry);
+//                        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+//                        DiaryTimeList.add(currentTime);
                     }
                 }
             }
